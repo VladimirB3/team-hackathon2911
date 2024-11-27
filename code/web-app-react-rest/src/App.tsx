@@ -1,36 +1,26 @@
-import {BrowserRouter as Router, Routes, Route} from 'react-router-dom';
-import Main from './components/Main';
-import Dashboard from "./components/Dashboard";
-import AuthCallback from './components/AuthCallback';
-import {loadErrorMessages, loadDevMessages} from "@apollo/client/dev";
-import ProtectedRoute from "./components/ProtectedRoute";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Main from "./components/Main";
 
-const isDev = process.env.NODE_ENV === 'development';
+import AuthCallback from "./components/AuthCallback";
+import { loadErrorMessages, loadDevMessages } from "@apollo/client/dev";
 
+const isDev = process.env.NODE_ENV === "development";
 
 const App: React.FC = () => {
-    return (
-        <Router>
-            <Routes>
-                <Route path="/auth/callback" element={<AuthCallback/>}/>
-                <Route
-                    path="/dashboard"
-                    element={
-                        <ProtectedRoute>
-                            <Dashboard/>
-                        </ProtectedRoute>
-                    }
-                />
+  return (
+    <Router>
+      <Routes>
+        <Route path="/auth/callback" element={<AuthCallback />} />
 
-                <Route path="*" element={<Main/>}/>
-            </Routes>
-        </Router>
-    )
-}
+        <Route path="*" element={<Main />} />
+      </Routes>
+    </Router>
+  );
+};
 
 if (isDev) {
-    loadDevMessages();
-    loadErrorMessages();
+  loadDevMessages();
+  loadErrorMessages();
 }
 
 export default App;
