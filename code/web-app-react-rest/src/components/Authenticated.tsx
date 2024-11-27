@@ -1,6 +1,8 @@
 import React from "react";
 import Demo from "./demos/rest/Demo";
 import DynamicTable, { CellData } from "./table/DynamicTable";
+import Example from "./Selection";
+import NavigationBar from "./Selection";
 
 interface AuthenticatedProps {
   user_info: Record<string, any>;
@@ -24,9 +26,15 @@ const Authenticated: React.FC<AuthenticatedProps> = ({
 
   return (
     <div>
-      <div>Authenticated as: {JSON.stringify(user_info)}</div>
-      <button onClick={logout}>Logout</button>
-      <DynamicTable initialColumns={6} initialRows={7} data={mockData} />;
+      <NavigationBar user_info={ user_info} />
+      <DynamicTable
+        initialColumns={6}
+        initialRows={7}
+        data={mockData}
+      />;
+      <div style={{ textAlign: "right" }}>
+        <button onClick={logout}>Logout</button>
+      </div>
     </div>
   );
 };
