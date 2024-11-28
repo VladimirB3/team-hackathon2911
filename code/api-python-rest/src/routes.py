@@ -3,6 +3,7 @@ from pydantic import BaseModel
 from context import get_rest_context, RestContext
 from models import items
 from data_types.items import Item, ItemData, ItemCreated
+from gemini import generate
 
 router = APIRouter()
 
@@ -12,6 +13,9 @@ class HelloResponse(BaseModel):
 class ItemCreateInput(BaseModel):
     name: str
 
+class ScheduleResponse(BaseModel):
+    message: str
+
 def get_current_user(request: Request, context: RestContext = Depends(get_rest_context)):
     if "Authorization" not in request.headers:
         raise HTTPException(status_code=401, detail="Unauthorized")
@@ -20,6 +24,10 @@ def get_current_user(request: Request, context: RestContext = Depends(get_rest_c
 @router.get("/hello", response_model=HelloResponse, description="Returns a greeting message for the authenticated user.")
 async def hello(user: dict = Depends(get_current_user)) -> HelloResponse:
     return HelloResponse(message=f"Hello, {user.get('name', 'User')}!")
+
+@router.get("/schedule", response_model=HelloResponse, description="Returns a greeting message for the authenticated user.")
+async def hello(user: dict = Depends(get_current_user)) -> HelloResponse:
+    return ScheduleResponse(message=f"Gemini says:\n {generate()}!")
 
 @router.get("/items", response_model=list[Item], description="Returns a list of items for the authenticated user.")
 async def get_items(user: dict = Depends(get_current_user)) -> list[Item]:
