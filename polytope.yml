@@ -3,20 +3,13 @@ templates:
   run:
   - couchbase
   - couchbase-init
-  - redpanda
-  - redpanda-init
-  - redpanda-console
-  - redpanda-connect
   - curity-db
   - curity
   - kong
   - web-app-react-rest
   - oauth-agent-web-app
   - api-python-rest
-  - ingest-api-python
-  - jupyter
   - api-client-rest
-  - ingest-api-client
   - oauth-agent-api-client-rest
 #  - module: ingest-api-ngrok
 #    args: 
@@ -259,9 +252,11 @@ modules:
         - { name: API_URL_FOR_APPS, value: "#pt-param api-url-for-apps" }
         - { name: JWT_OIDC_AUDIENCE, value: "#pt-param jwt-oidc-audience" }
         - { name: JWT_OIDC_JWKS_URL, value: "#pt-param jwt-oidc-jwks-url" }
+        - { name: GOOGLE_APPLICATION_CREDENTIALS, value: "/tmp/keys/ADC.json" }
       mounts:
         - { path: /root/.cache/, source: { type: volume, scope: project, id: dependency-cache }}
         - { path: /root/conf/, source: { type: host, path: ./conf }}
+        - { path: /tmp/keys/ADC.json, source: { type: host, path: ~/.config/gcloud/application_default_credentials.json }}
 
   - id: ingest-api-python
     module: polytope/python
