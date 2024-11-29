@@ -1,6 +1,7 @@
 import base64
 import vertexai
 from vertexai.generative_models import GenerativeModel, Part, SafetySetting
+from or_tools import build_schedule
 
 
 def generate():

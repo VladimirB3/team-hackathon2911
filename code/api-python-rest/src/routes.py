@@ -4,6 +4,8 @@ from context import get_rest_context, RestContext
 from models import items
 from data_types.items import Item, ItemData, ItemCreated
 from gemini import generate
+from schedule_endpoint import schedule
+from fastapi.responses import PlainTextResponse
 
 router = APIRouter()
 
@@ -25,9 +27,9 @@ def get_current_user(request: Request, context: RestContext = Depends(get_rest_c
 async def hello(user: dict = Depends(get_current_user)) -> HelloResponse:
     return HelloResponse(message=f"Hello, {user.get('name', 'User')}!")
 
-@router.get("/schedule", response_model=HelloResponse, description="Returns a greeting message for the authenticated user.")
-async def hello(user: dict = Depends(get_current_user)) -> HelloResponse:
-    return ScheduleResponse(message=f"Gemini says:\n {generate()}!")
+@router.get("/schedule", response_class=PlainTextResponse, description="Returns a greeting message for the authenticated user.")
+async def schedule_e(user: dict = Depends(get_current_user)):
+    return schedule()
 
 @router.get("/items", response_model=list[Item], description="Returns a list of items for the authenticated user.")
 async def get_items(user: dict = Depends(get_current_user)) -> list[Item]:
