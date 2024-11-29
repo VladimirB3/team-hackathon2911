@@ -1,3 +1,5 @@
+import json
+
 from fastapi import APIRouter, Depends, HTTPException, Request, status
 from pydantic import BaseModel
 from context import get_rest_context, RestContext
@@ -6,6 +8,7 @@ from data_types.items import Item, ItemData, ItemCreated
 from gemini import generate
 from schedule_endpoint import schedule
 from fastapi.responses import PlainTextResponse
+from hardcoded_data import desired_shifts
 
 router = APIRouter()
 
@@ -29,7 +32,20 @@ async def hello(user: dict = Depends(get_current_user)) -> HelloResponse:
 
 @router.get("/schedule", response_class=PlainTextResponse, description="Returns a greeting message for the authenticated user.")
 async def schedule_e(user: dict = Depends(get_current_user)):
-    return schedule()
+    return schedule(desired_shifts)
+
+@router.post("/schedule", response_class=PlainTextResponse, description="Returns a greeting message for the authenticated user.")
+async def schedule_modify(text_requirements: str, user: dict = Depends(get_current_user)):
+
+    return schedule(generate(desired_shifts, text_requirements))
+
+@router.get("/generate", response_class=PlainTextResponse, description="Returns a greeting message for the authenticated user.")
+async def generate_e(user: dict = Depends(get_current_user)):
+    text_requirements = """
+        "Add two more employees on Monday for each shift",
+"Increase number of employees by 50% on weekend",
+"""
+    return json.dumps(generate(desired_shifts, text_requirements))
 
 @router.get("/items", response_model=list[Item], description="Returns a list of items for the authenticated user.")
 async def get_items(user: dict = Depends(get_current_user)) -> list[Item]:

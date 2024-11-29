@@ -48,13 +48,30 @@ def build_schedule(employee_availability, desired_shifts):
 
     res = {}
 
+    days_mapping = {
+        0: "Monday",
+        1: "Tuesday",
+        2: "Wednesday",
+        3: "Thursday",
+        4: "Friday",
+        5: "Saturday",
+        6: "Sunday",
+        "0": "Monday",
+        "1": "Tuesday",
+        "2": "Wednesday",
+        "3": "Thursday",
+        "4": "Friday",
+        "5": "Saturday",
+        "6": "Sunday"
+    }
+
     # Print the solution
     if status == cp_model.OPTIMAL or status == cp_model.FEASIBLE:
         print("Solution found:")
         res["schedule"] = []
         for day in desired_shifts:
             print(f"Day {day}:")
-            res_day = {"day": day, "shifts": []}
+            res_day = {"day": days_mapping[day], "shifts": []}
             for shift_data in desired_shifts[day]:
 
                 start, end, num_shifts = shift_data

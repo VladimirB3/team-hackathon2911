@@ -1,22 +1,35 @@
 import base64
+import json
+
 import vertexai
 from vertexai.generative_models import GenerativeModel, Part, SafetySetting
-from or_tools import build_schedule
 
 
-def generate():
+def generate(desired_shifts, text_requirements):
     vertexai.init(project="level-lyceum-443016-s9", location="us-central1")
     model = GenerativeModel(
         "gemini-1.5-flash-002",
     )
+
+
     responses = model.generate_content(
-        ["""How many drivers does Foodora need?"""],
+        [f"""
+        Provided this json data:
+# Desired shifts per day of the week (start time, end time, day, number of employees per shift)
+{json.dumps(desired_shifts)}
+
+Change it to accommodate following requirements:
+
+{text_requirements}
+
+Return only modified JSON as plain text, no explanation, no markdown
+        """],
         generation_config=generation_config,
         safety_settings=safety_settings,
         stream=True,
     )
 
-    return "".join([response.text for response in responses])
+    return json.loads("".join([response.text for response in responses]))
 
 
 generation_config = {
