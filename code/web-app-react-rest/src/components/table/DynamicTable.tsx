@@ -1,74 +1,63 @@
-import React, { useState } from "react";
+import React from "react";
 
-export interface CellData {
-  assigned: number;
+export interface Shift {
+  start: number;
+  end: number;
+  employees: string[];
 }
 
-interface TableProps {
-  initialColumns: number;
-  initialRows: number;
-  data: CellData[][];
+export interface DaySchedule {
+  day: string;
+  shifts: Shift[];
 }
 
-const DynamicTable: React.FC<TableProps> = ({
-  initialColumns,
-  initialRows,
-  data,
-}) => {
-  const [columns, setColumns] = useState(initialColumns);
+interface ScheduleProps {
+  schedule: DaySchedule[];
+}
 
-  const handleColumnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setColumns(Number(event.target.value));
-  };
-
+const DynamicTable: React.FC<ScheduleProps> = ({ schedule }) => {
   return (
-    <div style={{ padding: "20px" }}>
-      <label>
-        Shift variation:
-        <input
-          type="number"
-          value={columns}
-          onChange={handleColumnChange}
-          min="1"
-          style={{ textAlign: 'center', margin: '10px', width: '60px' }}
-        />
-      </label>
-
-      <table style={{ borderCollapse: "collapse", width: "100%" }}>
-        <thead>
+      <div style={{ padding: "20px" }}>
+        <table style={{ borderCollapse: "collapse", width: "100%" }}>
+          <thead>
           <tr>
+            <th style={{ border: "1px solid #ddd", padding: "8px" }}>Day</th>
             <th style={{ border: "1px solid #ddd", padding: "8px" }}>Time</th>
-            {Array.from({ length: columns }).map((_, colIndex) => (
-              <th
-                key={colIndex}
-                style={{ border: "1px solid #ddd", padding: "8px" }}
-              >
-                Column {colIndex + 1}
-              </th>
-            ))}
+            <th style={{ border: "1px solid #ddd", padding: "8px" }}>Employees</th>
           </tr>
-        </thead>
-        <tbody>
-          {Array.from({ length: initialRows }).map((_, rowIndex) => (
-            <tr key={rowIndex}>
-              <td style={{ border: "1px solid #ddd", padding: "8px" }}>
-                Row {rowIndex + 1}
-              </td>
-              {Array.from({ length: columns }).map((_, colIndex) => (
-                <td
-                  key={colIndex}
-                  style={{ border: "1px solid #ddd", padding: "8px" }}
-                >
-                  <div>
-                    <p>Assigned: {data[rowIndex][colIndex]?.assigned || 0}</p>
-                  </div>
-                </td>
-              ))}
-            </tr>
+          </thead>
+          <tbody>
+          {schedule.map((daySchedule, dayIndex) => (
+              <React.Fragment key={dayIndex}>
+                {daySchedule.shifts.map((shift, shiftIndex) => (
+                    <tr key={`${dayIndex}-${shiftIndex}`}>
+                      {/* Merge cells for the day */}
+                      {shiftIndex === 0 && (
+                          <td
+                              rowSpan={daySchedule.shifts.length}
+                              style={{
+                                border: "1px solid #ddd",
+                                padding: "8px",
+                                verticalAlign: "top",
+                                textAlign: "center",
+                              }}
+                          >
+                            {daySchedule.day}
+                          </td>
+                      )}
+                      <td style={{ border: "1px solid #ddd", padding: "8px" }}>
+                        {shift.start}:00 - {shift.end}:00
+                      </td>
+                      <td style={{ border: "1px solid #ddd", padding: "8px" }}>
+                        {shift.employees.join(", ")}
+                      </td>
+                    </tr>
+                ))}
+              </React.Fragment>
           ))}
-        </tbody>
-      </table>
-    </div>
+          </tbody>
+        </table>
+      </div>
   );
 };
 

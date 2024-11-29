@@ -1,42 +1,59 @@
 import React from "react";
 import Demo from "./demos/rest/Demo";
-import DynamicTable, { CellData } from "./table/DynamicTable";
-import Example from "./Selection";
-import NavigationBar from "./Selection";
+import DynamicTable from "./table/DynamicTable";
+import Example from "./NavigationBar";
+import NavigationBar from "./NavigationBar";
+
+const scheduleData = {
+    schedule: [
+        {
+            day: "Monday",
+            shifts: [
+                {
+                    start: 6,
+                    end: 12,
+                    employees: ["Employee A", "Employee B", "Employee C"],
+                },
+                {
+                    start: 12,
+                    end: 18,
+                    employees: ["Employee A"],
+                },
+            ],
+        },
+        {
+            day: "Tuesday",
+            shifts: [
+                {
+                    start: 6,
+                    end: 12,
+                    employees: ["Employee E", "Employee C"],
+                },
+            ],
+        },
+    ],
+};
 
 interface AuthenticatedProps {
-  user_info: Record<string, any>;
-  logout: () => void;
-  csrf: string;
+    user_info: Record<string, any>;
+    logout: () => void;
+    csrf: string;
 }
 
 const Authenticated: React.FC<AuthenticatedProps> = ({
-  user_info,
-  logout,
-  csrf,
-}) => {
-  const rows = 7; // Days of the week
-  const columns = 6; // Time intervals
-
-  const mockData: CellData[][] = Array.from({ length: rows }).map(() =>
-    Array.from({ length: columns }).map(() => ({
-      assigned: Math.floor(Math.random() * 30),
-    })),
-  );
-
-  return (
-    <div>
-      <NavigationBar user_info={ user_info} />
-      <DynamicTable
-        initialColumns={6}
-        initialRows={7}
-        data={mockData}
-      />;
-      <div style={{ textAlign: "right" }}>
-        <button onClick={logout}>Logout</button>
-      </div>
-    </div>
-  );
+                                                         user_info,
+                                                         logout,
+                                                         csrf,
+                                                     }) => {
+    return (
+        <div>
+            <NavigationBar user_info={user_info} logout={logout} />
+            <DynamicTable schedule={scheduleData.schedule} />,
+            <div style={{ textAlign: "right" }}>
+                <button onClick={logout}>avwevwv</button>
+            </div>
+        </div>
+    );
 };
 
 export default Authenticated;
