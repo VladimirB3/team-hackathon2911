@@ -84,7 +84,7 @@ def build_schedule(employee_availability, desired_shifts):
                 for emp in employees:
                     if solver.Value(shifts[(emp, day, start, end)]) == 1:
                         print(f"    Employee {emp}")
-                        res_shift["employees"].append(f"Employee {emp}")
+                        res_shift["employees"].append(emp)
                 res_day["shifts"].append(res_shift)
             res["schedule"].append(res_day)
     else:

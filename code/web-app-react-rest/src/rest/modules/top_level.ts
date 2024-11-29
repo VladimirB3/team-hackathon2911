@@ -26,6 +26,13 @@ export function create(client: ApiClientInterface) {
                     return client.get<ScheduleData>('/api/schedule', on_error);
                 },
 
+          schedulePost(modifyTextToSend: string): Promise<ScheduleData> {
+                        const on_error = (messages: string[]) => {
+                            console.error('Error in schedule API:', messages);
+                        };
+                        return client.post<ScheduleData>('/api/schedule?text_requirements=' + modifyTextToSend, on_error, {});
+                    },
+
         hello(): Promise<{ message: string }> {
             const on_error = (messages: string[]) => {
                 console.error('Error in hello API:', messages);
