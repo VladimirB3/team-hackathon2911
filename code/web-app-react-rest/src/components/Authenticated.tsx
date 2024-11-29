@@ -1,24 +1,100 @@
-import React from 'react'; 
-import Demo from './demos/rest/Demo';
+import React, { useMemo, useState, useEffect, useCallback }  from "react";
+import Demo from "./demos/rest/Demo";
+import DynamicTable from "./table/DynamicTable";
+import Example from "./NavigationBar";
+import NavigationBar from "./NavigationBar";
+import { ApiClientRest } from '../rest/api_client_rest'
+
+import {DaySchedule, Shift, ScheduleData} from "../rest/modules/top_level"
+
+/*
+
+const scheduleData = {
+    schedule: [
+        {
+            day: "Monday",
+            shifts: [
+                {
+                    start: 6,
+                    end: 12,
+                    employees: ["Employee A", "Employee B", "Employee C"],
+                },
+                {
+                    start: 12,
+                    end: 18,
+                    employees: ["Employee A"],
+                },
+            ],
+        },
+        {
+            day: "Tuesday",
+            shifts: [
+                {
+                    start: 6,
+                    end: 12,
+                    employees: ["Employee E", "Employee C"],
+                },
+            ],
+        },
+    ],
+};
+ */
 
 interface AuthenticatedProps {
-  user_info: Record<string, any>; 
-  logout: () => void; 
-  csrf: string;
+    user_info: Record<string, any>;
+    logout: () => void;
+    csrf: string;
 }
 
-const Authenticated: React.FC<AuthenticatedProps> = ({ user_info, logout, csrf }) => {
+const Authenticated: React.FC<AuthenticatedProps> = ({
+                                                         user_info,
+                                                         logout,
+                                                         csrf
+                                                     }) => {
+
+    const client = useMemo(() => new ApiClientRest(csrf), [csrf])
+
+
+    const [schedule, setSchedule] = useState<DaySchedule[]>([])
+
+     const [loading, setLoading] = useState(true)
+     const [error, setError] = useState<string | null>(null)
+
+     const handleError = useCallback((message: string, details?: any) => {
+         console.error(`Error: ${message}`, details)
+         setError(`${message}${details ? `: ${JSON.stringify(details)}` : ''}`)
+     }, [])
+
+     const fetchSchedule = useCallback(async () => {
+         try {
+             const scheduleData = await client.schedule()
+
+             console.log(scheduleData)
+
+             setSchedule(scheduleData.schedule)
+             setLoading(false)
+         } catch (err) {
+             handleError('Error fetching items', err)
+             setLoading(false)
+         }
+     }, [client.schedule, handleError])
+
+    useEffect(() => {
+         fetchSchedule()
+     }, [fetchSchedule])
+
+    if (error) return <p className="text-error p-4">{'Error: ' + error}</p>
+
+
     return (
         <div>
-            <div>
-                Authenticated as: {JSON.stringify(user_info)}
+            <NavigationBar user_info={user_info} logout={logout} />
+            <DynamicTable schedule={schedule} />,
+            <div style={{ textAlign: "right" }}>
+                <button onClick={logout}>avwevwv</button>
             </div>
-            <button onClick={logout}>
-                Logout
-            </button>
-            <Demo csrf={csrf} />
         </div>
-    )
-} 
+    );
+};
 
 export default Authenticated;

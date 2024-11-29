@@ -99,7 +99,8 @@ const Items: React.FC<ItemsProps> = ({ client }) => {
                                     className="join-item btn btn-square btn-md btn-primary"
                                     onClick={handleAddItem}
                                 >
-                                    Add
+                                    Add 
+                                    
                                 </button>
                             </div>
                         </div>

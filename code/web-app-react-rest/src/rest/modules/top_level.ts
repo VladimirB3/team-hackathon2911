@@ -1,7 +1,31 @@
 import { ApiClientInterface } from '../types';
 
+export interface ScheduleData {
+    schedule:DaySchedule[];
+    }
+
+
+export interface Shift {
+  start: number;
+  end: number;
+  employees: string[];
+}
+
+export interface DaySchedule {
+  day: string;
+  shifts: Shift[];
+}
+
+
 export function create(client: ApiClientInterface) {
     return {
+        schedule(): Promise<ScheduleData> {
+                    const on_error = (messages: string[]) => {
+                        console.error('Error in schedule API:', messages);
+                    };
+                    return client.get<ScheduleData>('/api/schedule', on_error);
+                },
+
         hello(): Promise<{ message: string }> {
             const on_error = (messages: string[]) => {
                 console.error('Error in hello API:', messages);
