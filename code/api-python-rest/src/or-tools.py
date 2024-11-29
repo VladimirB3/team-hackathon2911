@@ -26,10 +26,10 @@ employee_availability = {
 desired_shifts = {
     0: [(6, 12, 1), (12, 18, 2), (18, 24, 3)],
     1: [(6, 12, 1), (12, 18, 1), (18, 24, 1)],
-    3: [(6, 12, 2), (12, 18, 2), (18, 24, 2)],
-    4: [(6, 12, 2), (12, 18, 2), (18, 24, 2)],
-    5: [(6, 12, 2), (12, 18, 2), (18, 24, 2)],
-    6: [(6, 12, 2), (12, 18, 2), (18, 24, 2)],
+    3: [(6, 12, 2), (12, 18, 2), (18, 24, 5)],
+    4: [(6, 12, 3), (12, 18, 2), (18, 24, 2)],
+    5: [(6, 12, 5), (12, 18, 2), (18, 24, 5)],
+    6: [(6, 12, 2), (12, 18, 4), (18, 24, 2)],
 }
 
 num_days = len(desired_shifts)
@@ -77,7 +77,9 @@ solver = cp_model.CpSolver()
 status = solver.Solve(model)
 
 # Print the solution
-if status == cp_model.OPTIMAL or status == cp_model.FEASIBLE:
+if status == cp_model.FEASIBLE:
+    if status != cp_model.OPTIMAL:
+        print("Warning: Solution is not OPTIMAL!")
     print("Solution found:")
     for day in desired_shifts:
         print(f"Day {day}:")
